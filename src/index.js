@@ -1,31 +1,31 @@
 module.exports = function check(str, bracketsConfig) {
-    // your solution
-    let brackets = str;
-
-    if(brackets.length % 2 > 0) {
-        return false;
+    let stack = [];
+    let openBracketsChart = {};
+    let closingBracketsChart = {};
+    for (let i = 0; i < bracketsConfig.length; i++) {
+        openBracketsChart[bracketsConfig[i][0]] = i;
+        closingBracketsChart[bracketsConfig[i][1]] = i;
     }
-    function checkBrackets() {
-        for (let i=0; i <= brackets.length / 2 - 1; i++){
-            let openBracket = brackets[i];
-            let closedBracket;
-            bracketsConfig.forEach(element => {
-                if (element.includes(openBracket)) {
-                    closedBracket = element[1];
+
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] in closingBracketsChart && str[i] === stack[stack.length - 1]) {
+            stack.pop();
+        } else {
+            if (str[i] in openBracketsChart) {
+                stack.push(str[i])
+            } else {
+                if (closingBracketsChart[str[i]] === openBracketsChart[stack[stack.length - 1]]) {
+                    stack.pop()
+                } else {
+                    return false;
                 }
-            });
-            if (brackets[i+1] === closedBracket) {
-                if (brackets.length === 2) {
-                    return true;
-                }
-                else {
-                    brackets = brackets.slice(0, i) + brackets.slice(i + 1 + 1);
-                    i = -1;
-                    return checkBrackets()
-                }
+
+
             }
         }
-        return false;
     }
-    return checkBrackets();
+
+    return stack.length !== 0 ? false : true;
+
 }
+
